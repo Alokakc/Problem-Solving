@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Tuple {
     int effort;
     int row;
@@ -19,38 +17,28 @@ class PairComparator implements Comparator<Tuple> {
 }
 
 class Solution {
-    public int minimumEffortPath(int[][] h) {
-        int n = h.length;
-        int m = h[0].length;
-        if(n==1 && m==1) return 0;
+    public static int MinimumEffort(int n, int m, int[][] h) {
         PriorityQueue<Tuple> pq = new PriorityQueue<>(new PairComparator());
         int[][] dir = {{0,1}, {0,-1}, {-1,0}, {1,0}};
-        boolean[][] vis = new boolean[n][m];
-        vis[0][0] = true;
-        if(n>1) {
-            pq.add(new Tuple(Math.abs(h[0][0]-h[1][0]), 1, 0));
-            vis[1][0] = true;
-        }
-        if(m>1) {
-            pq.add(new Tuple(Math.abs(h[0][0]-h[0][1]), 0, 1));
-            vis[0][1] = true;
-        }
+        int[][] dis = new int[n][m];
+        for(int i=0; i<n; i++) Arrays.fill(dis[i], (int)(1e9));
+        pq.add(new Tuple(0, 0, 0));
+        dis[0][0] = 0;
         while(!pq.isEmpty()) {
             Tuple t = pq.remove();
             int effort = t.effort;
             int row = t.row;
             int col = t.col;
-            vis[row][col] = true;
-            System.out.println(effort+" "+row+" "+col);
-            if(row == n-1 && col == m-1) {
-                return effort;
-            }
+            if(row == n-1 && col == m-1) return effort;
             for(int i=0; i<4; i++) {
                 int nr = row + dir[i][0];
                 int nc = col + dir[i][1];
-                if(nr>=0 && nr<n && nc>=0 && nc<m && !vis[nr][nc]) {
-                    int eff = Math.max(effort, Math.abs(h[row][col]-h[nr][nc]));
-                    pq.add(new Tuple(eff, nr, nc));
+                if(nr>=0 && nr<n && nc>=0 && nc<m) {
+                    int newEff = Math.max(Math.abs(h[row][col]-h[nr][nc]), effort);
+                    if(newEff < dis[nr][nc]) {
+                        dis[nr][nc] = newEff;
+                        pq.add(new Tuple(dis[nr][nc], nr, nc));
+                    }
                 }
             }
         }
