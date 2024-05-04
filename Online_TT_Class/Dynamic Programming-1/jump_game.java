@@ -1,3 +1,4 @@
+//memo
 import java.util.Arrays;
 
 class Solution {
@@ -14,5 +15,22 @@ class Solution {
         int[] dp = new int[nums.length+1];
         Arrays.fill(dp, -1);
         return solve(0, nums, dp);
+    }
+}
+
+//tabulation
+class Solution {
+    public int jump(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+        for(int i=n-2; i>=0; i--) {
+            int res = 10000;
+            int furthest = Math.min(i + nums[i], n - 1);
+            for(int j=i+1; j<=furthest; j++) {
+                res = Math.min(res, 1+dp[j]); 
+            }
+            dp[i] = res;
+        }
+        return dp[0];
     }
 }
